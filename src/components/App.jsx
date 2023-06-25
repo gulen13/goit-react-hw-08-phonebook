@@ -1,40 +1,28 @@
-import ContactForm from './ContactForm/ContactForm';
-import Filter from './Filter/Filter';
-import ContactList from './ContactList/ContactList';
-import { Container } from './App.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { getError, getIsLoading, selectPhones } from 'redux/selector';
-import { useEffect } from 'react';
-import { fetchContacts } from 'redux/operations';
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from './Layout';
+import { lazy } from 'react';
 
-const App = () => {
-  const dispatch = useDispatch();
-  const phones = useSelector(selectPhones);
-  const isLoading = useSelector(getIsLoading);
-  const error = useSelector(getError);
+const HomePage = lazy(() => import('../pages/Home'));
+const Contacts = lazy(() => import('../pages/Contacts/Contacts'));
+const RegisterPage = lazy(() => import('../pages/Register'));
+const LoginPage = lazy(() => import('../pages/Login'));
 
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+export const App = () => {
+  // const dispatch = useDispatch();
+  // const { isRefreshing } = useAuth();
+
+  // useEffect(() => {
+  //   dispatch(refreshUser());
+  // }, [dispatch]);
 
   return (
-    <Container>
-      <h1>Phonebook</h1>
-      <ContactForm />
-      <h2>Contacts</h2>
-      <Filter />
-      {isLoading && (
-        <>
-          <h1>Loading...</h1>
-        </>
-      )}
-      {error && <p>Sorry. {error}</p>}
-      {!isLoading && !error && phones.length < 1 && (
-        <p>Sorry, there is no contacts yet</p>
-      )}
-      <ContactList />
-    </Container>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="/contacts" element={<Contacts />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Route>
+    </Routes>
   );
 };
-
-export default App;

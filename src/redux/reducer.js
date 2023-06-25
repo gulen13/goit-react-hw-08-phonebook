@@ -1,6 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import { phoneReducer } from "./phoneSlice";
-import { filterReducer } from "./filterSlice";
+import { phoneReducer } from "./phonebook/phoneSlice";
+import { filterReducer } from "./phonebook/filterSlice";
 
 export const reducer = combineReducers(
   {
