@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkgoit_react_hw_07_phonebook=self.webpackChunkgoit_react_hw_07_phonebook||[]).push([[415],{415:function(e,n,t){t.r(n),t.d(n,{default:function(){return c}});var o=t(184);function c(){return(0,o.jsx)("div",{children:(0,o.jsx)("h1",{children:"Contact manager welcome page"})})}}}]);
-//# sourceMappingURL=415.6ae94da0.chunk.js.map
