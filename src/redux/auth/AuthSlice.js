@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { logIn, logOut, register } from './AuthOperations';
+import { logIn, logOut, refreshUser, register } from './AuthOperations';
+import persistReducer from 'redux-persist/es/persistReducer';
+import storage from 'redux-persist/lib/storage';
 
 const initialState = {
   user: { name: null, email: null },
@@ -27,7 +29,12 @@ const handleLoginFulfilled = (state, { payload }) => {
   state.user = payload.user;
   state.token = payload.token;
   state.isLoggedIn = true;
-  console.log(initialState.token)
+}
+
+const handlerefreshFulfilled = (state, { payload }) => {
+  state.user = payload;
+  state.isLoggedIn = true;
+  state.isRefreshing = false;
 }
 
 const handleLogOut = (state) => {
@@ -44,9 +51,27 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, handleRegisterFulfilled,)
       .addCase(logIn.fulfilled, handleLoginFulfilled,)
       .addCase(logOut.fulfilled, handleLogOut,)
+      .addCase(refreshUser.pending, state => {
+        state.isRefreshing = true;
+      })
+      .addCase(refreshUser.fulfilled, handlerefreshFulfilled)
+      .addCase(refreshUser.rejected, state => {
+        state.isRefreshing = false;
+      })
       .addMatcher(action => action.type.endsWith('/pending'), handlePending)
       .addMatcher(action => action.type.endsWith('/rejected'), handleRejected)
   },
 });
 
 export const authReducer = authSlice.reducer;
+
+const authPersistConfig = {
+  key: 'auth',
+  storage,
+  whitelist: ['token'],
+};
+
+export const persistedAuthReducer = persistReducer(
+  authPersistConfig,
+  authReducer
+);
