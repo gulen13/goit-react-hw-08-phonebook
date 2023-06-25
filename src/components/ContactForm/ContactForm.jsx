@@ -25,7 +25,7 @@ const ContactForm = () => {
 
     const newContact = {
       name,
-      phone: number,
+      number,
     };
 
     dispatch(addContact(newContact));

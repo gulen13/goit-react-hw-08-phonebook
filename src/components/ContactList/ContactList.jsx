@@ -14,13 +14,13 @@ const ContactList = () => {
 
   return (
     <ContactListStyle>
-      {filteredPhones.map(({ id, name, phone }) => {
+      {filteredPhones.map(({ id, name, number }) => {
         return (
           <ContactListItem
             key={id}
             id={id}
             contactName={name}
-            contactNumber={phone}
+            contactNumber={number}
             onClick={() => dispatch(deleteContact(id))}
           />
         );
