@@ -54,5 +54,4 @@ const phoneSlice = createSlice({
   },
 });
 
-export const { addPhone, deletePhone } = phoneSlice.actions;
 export const phoneReducer = phoneSlice.reducer;
