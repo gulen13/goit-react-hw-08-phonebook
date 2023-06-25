@@ -1,37 +1,64 @@
 import { useDispatch } from 'react-redux';
-import { register } from 'redux/auth/AuthOperations';
+import { registerUser } from 'redux/auth/AuthOperations';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { object, string } from 'yup';
+import { toast } from 'react-hot-toast';
+
+const validationSchema = object({
+  name: string().min(4).required(),
+  email: string().email().required(),
+  password: string().min(6).required(),
+}).required();
 
 export const RegisterForm = () => {
   const dispatch = useDispatch();
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const form = e.currentTarget;
+  const {
+    register,
+    handleSubmit,
+    resetField,
+    formState: { errors, isDirty },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const notify = () => toast.success('Registered successfuly!');
+
+  const onSubmit = ({ name, email, password }) => {
     dispatch(
-      register({
-        name: form.elements.name.value,
-        email: form.elements.email.value,
-        password: form.elements.password.value,
+      registerUser({
+        name: name,
+        email: email,
+        password: password,
       })
     );
-    form.reset();
+    notify();
+    resetField('name');
+    resetField('email');
+    resetField('password');
   };
 
   return (
-    <form onSubmit={handleSubmit} autoComplete="off">
+    <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <label>
         Username
-        <input type="text" name="name" />
+        <input type="text" {...register('name')} />
+        <p>{errors.name?.message}</p>
       </label>
       <label>
         Email
-        <input type="email" name="email" />
+        <input type="email" {...register('email')} />
+        <p>{errors.email?.message}</p>
       </label>
       <label>
         Password
-        <input type="password" name="password" />
+        <input type="password" {...register('password')} />
+        <p>{errors.password?.message}</p>
       </label>
-      <button type="submit">Register</button>
+      <button type="submit" disabled={!isDirty}>
+        Register
+      </button>
     </form>
   );
 };
