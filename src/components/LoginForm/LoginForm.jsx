@@ -1,18 +1,26 @@
+import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { logIn } from 'redux/auth/AuthOperations';
 
 export const LoginForm = () => {
   const dispatch = useDispatch();
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     const form = e.currentTarget;
-    dispatch(
-      logIn({
-        email: form.elements.email.value,
-        password: form.elements.password.value,
-      })
-    );
+
+    try {
+      await dispatch(
+        logIn({
+          email: form.elements.email.value,
+          password: form.elements.password.value,
+        })
+      ).unwrap();
+      toast.success('Welcome User!');
+    } catch (error) {
+      toast.error('Error Login');
+    }
+
     form.reset();
   };
 
