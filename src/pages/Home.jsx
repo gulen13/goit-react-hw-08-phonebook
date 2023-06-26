@@ -1,7 +1,9 @@
+import { Box } from '@mui/material';
+
 export default function Home() {
   return (
-    <div>
-      <h1>Contact manager welcome page</h1>
-    </div>
+    <Box sx={{ display: 'flex', justifyContent: 'center', pt: 10 }}>
+      <h1>Phone book manager welcome page</h1>
+    </Box>
   );
 }

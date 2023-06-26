@@ -1,3 +1,4 @@
+import { Box, Button } from '@mui/material';
 import { toast } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from 'redux/auth/AuthOperations';
@@ -10,18 +11,18 @@ export const UserMenu = () => {
   const handleLogOut = async () => {
     try {
       await dispatch(logOut()).unwrap();
-      toast.success('Good bye User!');
+      toast.success(`Good bye ${user.name} !`);
     } catch (error) {
       toast.error('Error Login');
     }
   };
 
   return (
-    <div>
+    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
       <p>Welcome, {user.name} </p>
-      <button type="button" onClick={handleLogOut}>
+      <Button variant="contained" type="button" onClick={handleLogOut}>
         Logout
-      </button>
-    </div>
+      </Button>
+    </Box>
   );
 };

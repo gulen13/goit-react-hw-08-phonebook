@@ -1,26 +1,33 @@
 import { Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { Suspense } from 'react';
-import { AppBar } from './AppBar/AppBar';
+import { AppBarStyled } from './AppBar/AppBar';
 import { ColorRing } from 'react-loader-spinner';
+import { Box } from '@mui/material';
 
 export const Layout = () => {
   return (
     <>
-      <AppBar />
+      <AppBarStyled />
       <Suspense
         fallback={
-          <div>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '35%',
+              left: '45%',
+            }}
+          >
             <ColorRing
               visible={true}
-              height="80"
-              width="80"
+              height="120"
+              width="120"
               ariaLabel="blocks-loading"
               wrapperStyle={{}}
               wrapperClass="blocks-wrapper"
               colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
             />
-          </div>
+          </Box>
         }
       >
         <Outlet />

@@ -7,7 +7,7 @@ import { refreshUser } from 'redux/auth/AuthOperations';
 import { PrivateRoute } from './PrivateRoute';
 import { RestrictedRoute } from './RestrictedRoute';
 import { ColorRing } from 'react-loader-spinner';
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 
 const HomePage = lazy(() => import('../pages/Home'));
 const Contacts = lazy(() => import('../pages/Contacts/Contacts'));
@@ -25,17 +25,23 @@ export const App = () => {
   return (
     <Container maxWidth="lg" sx={{ p: 2 }}>
       {isRefreshing ? (
-        <div>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '35%',
+            left: '45%',
+          }}
+        >
           <ColorRing
             visible={true}
-            height="80"
-            width="80"
+            height="120"
+            width="120"
             ariaLabel="blocks-loading"
             wrapperStyle={{}}
             wrapperClass="blocks-wrapper"
             colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
           />
-        </div>
+        </Box>
       ) : (
         <Routes>
           <Route path="/" element={<Layout />}>

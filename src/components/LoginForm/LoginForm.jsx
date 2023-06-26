@@ -4,7 +4,8 @@ import { logIn } from 'redux/auth/AuthOperations';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, string } from 'yup';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
+import Input from '@mui/joy/Input';
 
 const validationSchema = object({
   email: string().email().required(),
@@ -23,35 +24,90 @@ export const LoginForm = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const notify = () => toast.success('Welcome User!');
-
   const onSubmit = ({ email, password }) => {
     dispatch(
       logIn({
         email: email,
         password: password,
       })
-    );
-    notify();
+    )
+      .unwrap()
+      .then(response => {
+        toast.success(`Wellcome, ${response.user.name}!`);
+      })
+      .catch(() => toast.error('No such user!'));
+
     resetField('email');
     resetField('password');
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-      <label>
-        Email
-        <input type="email" {...register('email')} />
-        <p>{errors.email?.message}</p>
-      </label>
-      <label>
-        Password
-        <input type="password" {...register('password')} />
-        <p>{errors.password?.message}</p>
-      </label>
-      <Button variant="contained" type="submit" disabled={!isDirty}>
-        Log In
-      </Button>
-    </form>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        mt: 12,
+        ml: 'auto',
+        mr: 'auto',
+        border: 1,
+        borderRadius: 2,
+        p: 2,
+        maxWidth: 300,
+      }}
+    >
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            width: 300,
+          }}
+        >
+          <label>
+            Email
+            <Input
+              required
+              type="email"
+              variant="outlined"
+              color="info"
+              sx={{
+                mt: 1,
+                width: 250,
+              }}
+              {...register('email')}
+            />
+            <p>{errors.email?.message}</p>
+          </label>
+
+          <label>
+            Password
+            <Input
+              required
+              variant="outlined"
+              color="info"
+              sx={{
+                mt: 1,
+                width: 250,
+              }}
+              type="password"
+              {...register('password')}
+            />
+            <p>{errors.password?.message}</p>
+          </label>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              width: 250,
+            }}
+            disabled={!isDirty}
+          >
+            Log In
+          </Button>
+        </Box>
+      </form>
+    </Box>
   );
 };
