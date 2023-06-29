@@ -4,7 +4,11 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, string } from 'yup';
 import { toast } from 'react-hot-toast';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, InputAdornment, TextField } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useState } from 'react';
 
 const emailRegExp =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -27,6 +31,11 @@ const validationSchema = object({
 
 export const RegisterForm = () => {
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(show => !show);
+  const handleMouseDownPassword = event => {
+    event.preventDefault();
+  };
 
   const {
     register,
@@ -101,6 +110,7 @@ export const RegisterForm = () => {
             {...register('email')}
           />
           <TextField
+            type={showPassword ? 'text' : 'password'}
             variant="outlined"
             required
             fullWidth
@@ -109,6 +119,19 @@ export const RegisterForm = () => {
             error={!isValid && Boolean(errors.password)}
             helperText={!isValid && errors.password?.message}
             focused
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             {...register('password')}
           />
           <Button
