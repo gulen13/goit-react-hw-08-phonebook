@@ -4,14 +4,26 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, string } from 'yup';
 import { toast } from 'react-hot-toast';
-import { Box, Button } from '@mui/material';
-import Input from '@mui/joy/Input';
+import { Box, Button, TextField } from '@mui/material';
+
+const emailRegExp =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const passwordRegExp = /^(?=(?:.*[a-zA-Z]){4})(?=(?:.*\d){4})[a-zA-Z\d]+$/;
 
 const validationSchema = object({
-  name: string().min(4).required(),
-  email: string().email().required(),
-  password: string().min(6).required(),
-}).required();
+  name: string()
+    .min(4, 'Name must be at least 4 symbols.')
+    .required('Name is required.'),
+  email: string()
+    .matches(emailRegExp, 'Email must be a valid email.')
+    .required('Email is required.'),
+  password: string()
+    .matches(
+      passwordRegExp,
+      'Password must be at least 8 characters long and including min 4 letters and min 4 numbers.'
+    )
+    .required('Password is required.'),
+});
 
 export const RegisterForm = () => {
   const dispatch = useDispatch();
@@ -19,9 +31,10 @@ export const RegisterForm = () => {
   const {
     register,
     handleSubmit,
-    resetField,
-    formState: { errors, isDirty },
+    reset,
+    formState: { errors, isDirty, isValid },
   } = useForm({
+    mode: 'onChange',
     resolver: yupResolver(validationSchema),
   });
 
@@ -36,11 +49,9 @@ export const RegisterForm = () => {
       .unwrap()
       .then(response => {
         toast.success(`Registered successfuly, ${response.user.name}!`);
+        reset();
       })
       .catch(() => toast.error('Something went wrong...'));
-    resetField('name');
-    resetField('email');
-    resetField('password');
   };
 
   return (
@@ -67,58 +78,46 @@ export const RegisterForm = () => {
             width: 300,
           }}
         >
-          <label>
-            Username
-            <Input
-              required
-              type="text"
-              variant="outlined"
-              color="info"
-              sx={{
-                mt: 1,
-                width: 250,
-              }}
-              {...register('name')}
-            />
-            <p>{errors.name?.message}</p>
-          </label>
-          <label>
-            Email
-            <Input
-              required
-              type="email"
-              variant="outlined"
-              color="info"
-              sx={{
-                mt: 1,
-                width: 250,
-              }}
-              {...register('email')}
-            />
-            <p>{errors.email?.message}</p>
-          </label>
-          <label>
-            Password
-            <Input
-              required
-              type="password"
-              variant="outlined"
-              color="info"
-              sx={{
-                mt: 1,
-                width: 250,
-              }}
-              {...register('password')}
-            />
-            <p>{errors.password?.message}</p>
-          </label>
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            size="small"
+            label="Name"
+            error={!isValid && Boolean(errors.name)}
+            helperText={!isValid && errors.name?.message}
+            focused
+            {...register('name')}
+          />
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            size="small"
+            label="Email"
+            error={!isValid && Boolean(errors.email)}
+            helperText={!isValid && errors.email?.message}
+            focused
+            {...register('email')}
+          />
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            size="small"
+            label="Password"
+            error={!isValid && Boolean(errors.password)}
+            helperText={!isValid && errors.password?.message}
+            focused
+            {...register('password')}
+          />
           <Button
             variant="contained"
             type="submit"
             sx={{
               width: 250,
             }}
-            disabled={!isDirty}
+            disabled={!isDirty || !isValid}
           >
             Register
           </Button>

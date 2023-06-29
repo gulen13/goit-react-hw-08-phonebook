@@ -2,27 +2,12 @@ import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { logIn } from 'redux/auth/AuthOperations';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { object, string } from 'yup';
-import { Box, Button } from '@mui/material';
-import Input from '@mui/joy/Input';
-
-const validationSchema = object({
-  email: string().email().required(),
-  password: string().min(6).required(),
-}).required();
+import { Box, Button, TextField } from '@mui/material';
 
 export const LoginForm = () => {
   const dispatch = useDispatch();
 
-  const {
-    register,
-    handleSubmit,
-    resetField,
-    formState: { errors, isDirty },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
+  const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = ({ email, password }) => {
     dispatch(
@@ -34,11 +19,9 @@ export const LoginForm = () => {
       .unwrap()
       .then(response => {
         toast.success(`Wellcome, ${response.user.name}!`);
+        reset();
       })
       .catch(() => toast.error('No such user!'));
-
-    resetField('email');
-    resetField('password');
   };
 
   return (
@@ -65,44 +48,30 @@ export const LoginForm = () => {
             width: 300,
           }}
         >
-          <label>
-            Email
-            <Input
-              required
-              type="email"
-              variant="outlined"
-              color="info"
-              sx={{
-                mt: 1,
-                width: 250,
-              }}
-              {...register('email')}
-            />
-            <p>{errors.email?.message}</p>
-          </label>
-
-          <label>
-            Password
-            <Input
-              required
-              variant="outlined"
-              color="info"
-              sx={{
-                mt: 1,
-                width: 250,
-              }}
-              type="password"
-              {...register('password')}
-            />
-            <p>{errors.password?.message}</p>
-          </label>
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            size="small"
+            label="Email"
+            focused
+            {...register('email')}
+          />
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            size="small"
+            label="Password"
+            focused
+            {...register('password')}
+          />
           <Button
             variant="contained"
             type="submit"
             sx={{
               width: 250,
             }}
-            disabled={!isDirty}
           >
             Log In
           </Button>
